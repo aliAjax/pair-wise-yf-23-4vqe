@@ -1,21 +1,20 @@
-import { mockData } from "../mocks/seedData";
 import type { Fixture } from "../types/Fixture";
-
-const endpoint = "/api/fixture";
+import { STORE_KEYS } from "../constants/storageKeys";
+import { idbGetAll, idbPut, idbDelete, idbPutMany, ensureSeedData } from "../utils/db";
 
 export async function listFixture(): Promise<Fixture[]> {
-  if (typeof fetch !== "undefined" && endpoint.startsWith("/api") && false) {
-    try {
-      const res = await fetch(endpoint);
-      if (res.ok) return await res.json();
-    } catch {
-      // Local mock fallback keeps the UI available during offline review.
-    }
-  }
-  return [...(mockData.fixture as unknown as Fixture[])];
+  await ensureSeedData();
+  return idbGetAll<Fixture>(STORE_KEYS.fixture);
 }
 
-export async function saveFixture(payload: Fixture) {
-  console.info("save Fixture", payload);
-  return payload;
+export async function saveFixture(payload: Fixture): Promise<Fixture> {
+  return idbPut(STORE_KEYS.fixture, payload);
+}
+
+export async function saveFixtureMany(payload: Fixture[]): Promise<void> {
+  return idbPutMany(STORE_KEYS.fixture, payload);
+}
+
+export async function deleteFixture(id: string): Promise<void> {
+  return idbDelete(STORE_KEYS.fixture, id);
 }

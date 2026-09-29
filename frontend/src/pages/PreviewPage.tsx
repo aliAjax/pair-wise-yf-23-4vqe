@@ -1,3 +1,1 @@
-export function PreviewPage() {
-  return <section>舞台预览</section>;
-}
+export { PreviewPage } from "./preview/PreviewPage";
