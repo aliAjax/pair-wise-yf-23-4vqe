@@ -1,14 +1,24 @@
 import type { ShowProject } from "../types/ShowProject";
 
-export const createDefaultShowProject = (overrides: Partial<ShowProject> = {}): ShowProject => ({
-  id: 1 as never,
-  title: "title 1" as never,
-  venue_name: "venue name 1" as never,
-  fixture_ids: [1,2] as number[],
-  track_ids: [1,2] as number[],
-  updated_at: "2026-06-11T09:00:00Z" as never,
-  ...overrides
-});
+export function createDefaultShowProject(overrides: Partial<ShowProject> = {}): ShowProject {
+  return {
+    id: 1,
+    title: "未命名彩排",
+    venue_name: "一号排练厅",
+    fixture_ids: [],
+    track_ids: [],
+    updated_at: new Date().toISOString(),
+    ...overrides
+  };
+}
 
-export const createShowProjectForm = createDefaultShowProject;
-export const createShowProjectResponse = createDefaultShowProject;
+export function createShowProjectResponse(raw: Partial<ShowProject>): ShowProject {
+  return createDefaultShowProject({
+    ...raw,
+    id: Number(raw.id) || 1,
+    title: String(raw.title ?? ""),
+    venue_name: String(raw.venue_name ?? ""),
+    fixture_ids: Array.isArray(raw.fixture_ids) ? raw.fixture_ids.map(Number) : [],
+    track_ids: Array.isArray(raw.track_ids) ? raw.track_ids.map(Number) : []
+  });
+}

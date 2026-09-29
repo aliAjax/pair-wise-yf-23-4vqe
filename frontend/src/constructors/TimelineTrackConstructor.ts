@@ -1,14 +1,27 @@
 import type { TimelineTrack } from "../types/TimelineTrack";
+import { TIMELINE_CONSTANTS } from "../constants/appConfig";
 
-export const createDefaultTimelineTrack = (overrides: Partial<TimelineTrack> = {}): TimelineTrack => ({
-  id: 1 as never,
-  cue_scene_id: 1 as never,
-  start_ms: "start ms 1" as never,
-  duration_ms: "duration ms 1" as never,
-  layer: "layer 1" as never,
-  locked: "locked 1" as never,
-  ...overrides
-});
+/** 默认轨道块：由调用方传入场景与起始时间 */
+export function createDefaultTimelineTrack(overrides: Partial<TimelineTrack> = {}): TimelineTrack {
+  return {
+    id: 0,
+    cue_scene_id: 0,
+    start_ms: 0,
+    duration_ms: TIMELINE_CONSTANTS.DEFAULT_TRACK_DURATION_MS,
+    layer: 1,
+    locked: false,
+    ...overrides
+  };
+}
 
-export const createTimelineTrackForm = createDefaultTimelineTrack;
-export const createTimelineTrackResponse = createDefaultTimelineTrack;
+export function createTimelineTrackResponse(raw: Partial<TimelineTrack>): TimelineTrack {
+  return createDefaultTimelineTrack({
+    ...raw,
+    id: Number(raw.id) || 0,
+    cue_scene_id: Number(raw.cue_scene_id) || 0,
+    start_ms: Number(raw.start_ms) || 0,
+    duration_ms: Number(raw.duration_ms) || TIMELINE_CONSTANTS.DEFAULT_TRACK_DURATION_MS,
+    layer: Number(raw.layer) || 1,
+    locked: Boolean(raw.locked)
+  });
+}
